@@ -3,15 +3,27 @@ use std::path::PathBuf;
 use std::process::Command;
 
 fn main() {
-    // Tell cargo to rerun this build script if boot.S changes
-    println!("cargo:rerun-if-changed=boot.S");
-    println!("cargo:rerun-if-changed=linker.ld");
+    // Get target information from Cargo
+    let _target = env::var("TARGET").unwrap();
+    let target_arch = env::var("CARGO_CFG_TARGET_ARCH").unwrap();
+
+    // Determine the cross-compiler based on target
+    let compiler = match target_arch.as_str() {
+        "aarch64" => "aarch64-none-elf-gcc",
+        _ => panic!("Unsupported target architecture: {}", target_arch),
+    };
 
     let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
     let boot_o = out_dir.join("boot.o");
+    let boot_s = PathBuf::from(format!("arch/{}/boot.S", target_arch));
+    let linker_ld = PathBuf::from(format!("arch/{}/linker.ld", target_arch));
+    
+    // Tell cargo to rerun this build script if boot.S changes
+    println!("cargo:rerun-if-changed={}", boot_s.display());
+    println!("cargo:rerun-if-changed={}", linker_ld.display());
 
     // Compile boot.S to boot.o
-    let status = Command::new("aarch64-none-elf-gcc")
+    let status = Command::new(compiler)
         .args(&[
             "-Wall",
             "-O2", 
@@ -19,12 +31,12 @@ fn main() {
             "-nostdlib",
             "-nostartfiles",
             "-c",
-            "boot.S",
+            boot_s.to_str().unwrap(),
             "-o",
             boot_o.to_str().unwrap(),
         ])
         .status()
-        .expect("Failed to execute aarch64-none-elf-gcc");
+        .expect(&format!("Failed to execute {}", compiler));
 
     if !status.success() {
         panic!("Failed to compile boot.S");
