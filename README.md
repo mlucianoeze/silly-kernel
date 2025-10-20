@@ -1,0 +1,1 @@
+* Links útiles: https://krinkinmu.github.io/2020/12/26/position-independent-executable.html
