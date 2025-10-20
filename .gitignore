@@ -2,3 +2,8 @@
 kernel.elf
 Image
 
+
+
+# Added by cargo
+
+/target

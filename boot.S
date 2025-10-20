@@ -65,7 +65,7 @@ bss_done:
     // Restore DTB pointer and jump to C
     mov     x0, x20
     mov     x10, #0x69
-    // bl      kernel_main  // shouldn't return
+    bl      kernel_main
     
 halt:
     wfi
