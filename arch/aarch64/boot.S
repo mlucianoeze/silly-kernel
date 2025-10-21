@@ -7,7 +7,7 @@ _head:
     .long   0                       // code1: reserved/NOP
     .quad   0                       // text_offset: 0 = can load anywhere
     .quad   _end - _head            // image_size: size of kernel image  
-    .quad   0x0a                    // flags: see below
+    .quad   0x00                    // flags: see below
     .quad   0                       // res2
     .quad   0                       // res3
     .quad   0                       // res4  

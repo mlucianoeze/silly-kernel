@@ -15,15 +15,17 @@
 
         rustToolchain = with pkgs; rust-bin.stable.latest.default.override {
           targets = [ "aarch64-unknown-none" ];
+          extensions = [ "rust-src" ];
         };
       in
       {
         devShells.default = pkgs.pkgsCross.aarch64-embedded.mkShell {
           name = "silly-kernel";
           packages = with pkgs; [
+            rustToolchain
             qemu
             gdb
-            rustToolchain
+            dtc
           ];
 
         };
