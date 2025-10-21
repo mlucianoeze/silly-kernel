@@ -1,0 +1,39 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug Kernel (GDB)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/target/aarch64-unknown-none/debug/silly-kernel",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Connect to remote target",
+                    "text": "target remote :1234"
+                },
+                {
+                    "description": "Set confirm off",
+                    "text": "set confirm off"
+                },
+                {
+                    "description": "Add symbol file",
+                    "text": "add-symbol-file ${workspaceFolder}/target/aarch64-unknown-none/debug/silly-kernel 0x40200000"
+                }
+            ],
+            "preLaunchTask": "build-kernel",
+            "postDebugTask": null
+        }
+    ]
+}
