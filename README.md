@@ -14,7 +14,7 @@ Como todo en esta vida, esto lo hago solamente por amor al arte, para aprender y
 
 ## Requisitos
 
-Hace falta Rust stable con target `aarch64-unknown-none`, e idealmente una toolchain GCC para el target `aarch64-none-elf-gcc`. Para arrancar el kernel, se recomienda arrancar el kernel con QEMU (sobre todo si los únicos drivers que voy a escribir van a ser para este mismo). Todo esto ya está configurado en [la devShell de Nix](flake.nix) como para tener un ambiente listo para usar.
+Hace falta Rust stable con target `aarch64-unknown-none`, e idealmente una toolchain GCC para el target `aarch64-none-elf-gcc`. Para arrancar el kernel, se recomienda utilizar QEMU, específicamente `qemu-system-aarch64` (sobre todo si los únicos drivers que voy a escribir van a ser para este mismo). Todo esto ya está configurado en [la devShell de Nix](flake.nix) como para tener un ambiente listo para usar.
 
 Al ser un flake, en caso de querer usar Nix, se puede levantar una devShell de la siguiente forma:
 
@@ -24,19 +24,39 @@ nix develop
 
 ## Compilación
 
-Se puede usar el workflow de `cargo` sin problema, tiene [todo](build.rs) para generar un kernel en formato ELF.
+Se pueden usar los xtasks para compilar el kernel:
 
 ```bash
-cargo build
+# Compilar el kernel (debug)
+cargo xtask build-kernel
+
+# Compilar el kernel en modo release
+cargo xtask build-kernel --release
 ```
 
 ## Ejecución
 
-El kernel se puede arrancar convirtiéndolo en una imágen binaria y corriendo la misma con QEMU:
+El kernel se puede arrancar también con sus xtasks:
 
 ```bash
-aarch64-none-elf-objcopy -O binary target/aarch64-unknown-none/debug/silly-kernel target/aarch64-unknown-none/debug/silly-kernel.bin
-qemu-system-aarch64 -M virt -cpu cortex-a57 -kernel target/aarch64-unknown-none/debug/silly-kernel.bin -display none -serial mon:stdio -gdb tcp::1234 -S
+# Compilar y ejecutar con símbolos de debug
+cargo xtask qemu
+
+# Compilar y ejecutar en modo release
+cargo xtask qemu --release
+
+# Compilar y ejecutar con debugging GDB en :1234
+cargo xtask debug-qemu
+```
+
+También se puede compilar solo la imagen binaria:
+
+```bash
+# Compilar imagen binaria (debug)
+cargo xtask build-image
+
+# Compilar imagen binaria (release)
+cargo xtask build-image --release
 ```
 
 ## Links Útiles

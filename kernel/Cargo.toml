@@ -1,0 +1,9 @@
+[workspace]
+
+[package]
+name = "silly-kernel"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+devtree = { path = "../libs/hardware/devtree" }

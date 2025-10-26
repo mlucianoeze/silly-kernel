@@ -14,7 +14,7 @@ Like everything in this life, I'm doing this just for the fun of it, because I l
 
 ## Requirements
 
-You need Rust stable with target `aarch64-unknown-none`, and ideally a GCC toolchain for the target `aarch64-none-elf-gcc`. To boot the kernel, it's recommended to boot the kernel with QEMU (especially if the only drivers I'm going to write are for it). All of this is already configured in a [Nix devShell](flake.nix) to have a ready-to-use environment.
+You need Rust stable with target `aarch64-unknown-none`, and ideally a GCC toolchain for the target `aarch64-none-elf-gcc`. To boot the kernel, it's recommended to boot the kernel with QEMU, specifically `qemu-system-aarch64` (especially if the only drivers I'm going to write are for it). All of this is already configured in a [Nix devShell](flake.nix) to have a ready-to-use environment.
 
 Being a flake, in case you want to use Nix, you can start a devShell in the following way:
 
@@ -24,19 +24,39 @@ nix develop
 
 ## Building
 
-You can use `cargo` without problem, it has [everything it needs](build.rs) to generate a kernel in ELF format.
+You can use available xtasks to build the kernel:
 
 ```bash
-cargo build
+# Build the kernel (debug)
+cargo xtask build-kernel
+
+# Build the kernel in release mode
+cargo xtask build-kernel --release
 ```
 
 ## Running
 
-The kernel can be booted by converting it to a binary image and running it with QEMU:
+The kernel can be also booted using the xtasks:
 
 ```bash
-aarch64-none-elf-objcopy -O binary target/aarch64-unknown-none/debug/silly-kernel target/aarch64-unknown-none/debug/silly-kernel.bin
-qemu-system-aarch64 -M virt -cpu cortex-a57 -kernel target/aarch64-unknown-none/debug/silly-kernel.bin -display none -serial mon:stdio -gdb tcp::1234 -S
+# Build and run with a debug image
+cargo xtask qemu
+
+# Build and run with a release image
+cargo xtask qemu --release
+
+# Build and run with GDB debugging at :1234
+cargo xtask debug-qemu
+```
+
+You can also just build the binary image:
+
+```bash
+# Build binary image (debug)
+cargo xtask build-image
+
+# Build binary image (release)
+cargo xtask build-image --release
 ```
 
 ## Useful Links

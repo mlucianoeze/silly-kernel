@@ -15,8 +15,9 @@ fn main() {
 
     let out_dir = PathBuf::from(env::var("OUT_DIR").unwrap());
     let boot_o = out_dir.join("boot.o");
-    let boot_s = PathBuf::from(format!("arch/{}/boot.S", target_arch));
-    let linker_ld = PathBuf::from(format!("arch/{}/linker.ld", target_arch));
+
+    let boot_s = PathBuf::from(format!("src/arch/{}/boot.S", target_arch));
+    let linker_ld = PathBuf::from(format!("src/arch/{}/linker.ld", target_arch));
     
     // Tell cargo to rerun this build script if boot.S changes
     println!("cargo:rerun-if-changed={}", boot_s.display());
